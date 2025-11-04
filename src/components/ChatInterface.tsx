@@ -4,6 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Send, Wine, User, Paperclip, X, FileText, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
+import { streamWineChat } from "@/lib/wineChat";
 
 interface FileAttachment {
   file: File;
@@ -79,52 +80,80 @@ const ChatInterface = () => {
     setAttachments((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const streamText = async (text: string) => {
-    setStreamingContent("");
-    const words = text.split(" ");
-    
-    for (let i = 0; i < words.length; i++) {
-      await new Promise((resolve) => setTimeout(resolve, 50));
-      setStreamingContent((prev) => prev + (i > 0 ? " " : "") + words[i]);
-    }
-    
-    return text;
-  };
-
   const handleSend = async () => {
     if ((!input.trim() && attachments.length === 0) || isLoading) return;
 
     const userMessage: Message = { 
       role: "user", 
-      content: input,
+      content: input || "Please analyze this wine list and provide recommendations.",
       attachments: attachments.length > 0 ? [...attachments] : undefined
     };
+    
     setMessages((prev) => [...prev, userMessage]);
+    const currentInput = input;
     setInput("");
+    const currentAttachments = [...attachments];
     setAttachments([]);
     setIsLoading(true);
 
-    // Simulate AI response with streaming
-    const aiResponses = [
-      "That's a great question! For a Cabernet Sauvignon, I'd recommend pairing it with a hearty steak or aged cheese. The bold tannins complement rich, fatty foods beautifully.",
-      "Excellent choice! A Pinot Noir would be perfect for that occasion. Look for bottles from Burgundy or Oregon for classic expressions, or try New Zealand for a fruit-forward style.",
-      "For your budget, I'd suggest exploring wines from lesser-known regions. Portuguese Douro reds and Spanish Ribera del Duero offer incredible value and complexity.",
-      "White wine for seafood is a classic pairing! I'd recommend a crisp Albariño or a rich Chardonnay depending on the preparation. For lighter fish, go with the Albariño.",
-      "I can see from your image that this is an excellent vintage! Let me help you understand the best food pairings and serving suggestions for this wine.",
-      "Looking at this wine list, I notice several outstanding options. Based on your preferences, I'd recommend focusing on the Burgundy section for elegant Pinot Noirs.",
-    ];
-    
-    const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-    
-    // Stream the response
-    const streamedText = await streamText(randomResponse);
-    
-    setMessages((prev) => [
-      ...prev,
-      { role: "assistant", content: streamedText },
-    ]);
-    setStreamingContent("");
-    setIsLoading(false);
+    try {
+      // Convert attachments to base64 for API
+      const imageData: { data: string; type: string }[] = [];
+      
+      for (const attachment of currentAttachments) {
+        if (attachment.type === "image" && attachment.preview) {
+          imageData.push({
+            data: attachment.preview,
+            type: "image"
+          });
+        } else if (attachment.type === "pdf") {
+          // For PDFs, we'll need to inform the user they should be converted to images
+          // or we can try to extract text (for now, show a message)
+          toast.info("PDF support: Please upload images of the wine list pages for best results");
+        }
+      }
+
+      let assistantContent = "";
+      
+      // Build messages history for context
+      const messageHistory = messages.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+      
+      messageHistory.push({
+        role: "user",
+        content: currentInput || "Please analyze this wine list and provide recommendations."
+      });
+
+      await streamWineChat({
+        messages: messageHistory,
+        imageData: imageData.length > 0 ? imageData : undefined,
+        onDelta: (chunk) => {
+          assistantContent += chunk;
+          setStreamingContent(assistantContent);
+        },
+        onDone: () => {
+          setMessages((prev) => [
+            ...prev,
+            { role: "assistant", content: assistantContent }
+          ]);
+          setStreamingContent("");
+          setIsLoading(false);
+        },
+        onError: (error) => {
+          console.error("Chat error:", error);
+          toast.error(`Error: ${error}`);
+          setIsLoading(false);
+          setStreamingContent("");
+        }
+      });
+    } catch (error) {
+      console.error("Error sending message:", error);
+      toast.error("Failed to send message. Please try again.");
+      setIsLoading(false);
+      setStreamingContent("");
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

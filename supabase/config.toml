@@ -1,0 +1,4 @@
+project_id = "xocflqvamviwgcowfnia"
+
+[functions.wine-chat]
+verify_jwt = false
