@@ -20,9 +20,9 @@ const Hero = ({ onStartChat }: HeroProps) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-16 md:pt-20 text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-12 text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Logo */}
-        <div className="inline-flex items-center justify-center mb-4">
+        <div className="inline-flex items-center justify-center mb-2">
           <img 
             src={enoaiLogo} 
             alt="enoAI - Wine Sommelier Logo" 
