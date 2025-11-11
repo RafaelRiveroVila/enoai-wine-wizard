@@ -59,7 +59,7 @@ const Hero = ({ onStartChat }: HeroProps) => {
         </div>
 
         {/* CTA Button */}
-        <div className="pt-4">
+        <div className="pt-4 pb-8">
           <Button
             size="lg"
             variant="hero"
