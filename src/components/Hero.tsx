@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { Wine } from "lucide-react";
 import wineHero from "@/assets/wine-hero.jpg";
+import enoaiLogo from "@/assets/enoai-logo.png";
 
 interface HeroProps {
   onStartChat: () => void;
@@ -21,9 +21,13 @@ const Hero = ({ onStartChat }: HeroProps) => {
 
       {/* Content */}
       <div className="relative z-10 max-w-4xl mx-auto px-6 text-center space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        {/* Icon */}
-        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 backdrop-blur-sm border border-primary/20 mb-4">
-          <Wine className="w-10 h-10 text-primary" />
+        {/* Logo */}
+        <div className="inline-flex items-center justify-center mb-4">
+          <img 
+            src={enoaiLogo} 
+            alt="enoAI - Wine Sommelier Logo" 
+            className="w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl"
+          />
         </div>
 
         {/* Heading */}
