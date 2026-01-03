@@ -12,14 +12,16 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, imageData } = await req.json();
+    const { messages, fileData } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
-    console.log("Processing wine chat request with images:", imageData?.length || 0);
+    const imageCount = fileData?.filter((f: any) => f.type === "image").length || 0;
+    const pdfCount = fileData?.filter((f: any) => f.type === "pdf").length || 0;
+    console.log(`Processing wine chat request with ${imageCount} images and ${pdfCount} PDFs`);
 
     // Build the messages array with vision support
     const systemPrompt = {
@@ -69,8 +71,8 @@ Always be helpful, knowledgeable, and enthusiastic about wine.`
       // Handle the last message with potential images
       const lastMessage = messages[messages.length - 1];
       
-      if (imageData && imageData.length > 0) {
-        // Create a multimodal message with text and images
+      if (fileData && fileData.length > 0) {
+        // Create a multimodal message with text and files (images/PDFs)
         const content: any[] = [
           {
             type: "text",
@@ -78,14 +80,26 @@ Always be helpful, knowledgeable, and enthusiastic about wine.`
           }
         ];
         
-        // Add all images
-        for (const image of imageData) {
-          content.push({
-            type: "image_url",
-            image_url: {
-              url: image.data // base64 data URL
-            }
-          });
+        // Add all files (images and PDFs)
+        for (const file of fileData) {
+          if (file.type === "image") {
+            content.push({
+              type: "image_url",
+              image_url: {
+                url: file.data // base64 data URL
+              }
+            });
+          } else if (file.type === "pdf") {
+            // For PDFs, Gemini supports inline_data format
+            // Extract base64 from data URL
+            const base64Data = file.data.split(',')[1] || file.data;
+            content.push({
+              type: "image_url",
+              image_url: {
+                url: `data:application/pdf;base64,${base64Data}`
+              }
+            });
+          }
         }
         
         formattedMessages.push({

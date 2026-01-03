@@ -5,13 +5,13 @@ export interface Message {
 
 export async function streamWineChat({
   messages,
-  imageData,
+  fileData,
   onDelta,
   onDone,
   onError,
 }: {
   messages: Message[];
-  imageData?: { data: string; type: string }[];
+  fileData?: { data: string; type: string; mimeType: string }[];
   onDelta: (text: string) => void;
   onDone: () => void;
   onError: (error: string) => void;
@@ -25,7 +25,7 @@ export async function streamWineChat({
         "Content-Type": "application/json",
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
-      body: JSON.stringify({ messages, imageData }),
+      body: JSON.stringify({ messages, fileData }),
     });
 
     if (!response.ok) {
