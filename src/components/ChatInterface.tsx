@@ -2,10 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Wine, User, Paperclip, X, FileText, Image as ImageIcon } from "lucide-react";
+import { Send, Wine, User, Paperclip, X, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
-
+import WineRecommendationDisplay, { parseWineRecommendation } from "./WineRecommendationDisplay";
 interface FileAttachment {
   file: File;
   preview?: string;
@@ -218,15 +218,19 @@ const ChatInterface = () => {
                       ))}
                     </div>
                   )}
-                  <div
-                    className={`rounded-2xl px-4 py-3 ${
-                      message.role === "user"
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground border border-border"
-                    }`}
-                  >
-                    <p className="text-sm leading-relaxed">{message.content}</p>
-                  </div>
+                  {message.role === "assistant" && parseWineRecommendation(message.content) ? (
+                    <WineRecommendationDisplay data={parseWineRecommendation(message.content)!} />
+                  ) : (
+                    <div
+                      className={`rounded-2xl px-4 py-3 ${
+                        message.role === "user"
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-foreground border border-border"
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                    </div>
+                  )}
                 </div>
                 {message.role === "user" && (
                   <div className="flex-shrink-0 w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center border border-accent/20">
