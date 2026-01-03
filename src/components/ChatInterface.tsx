@@ -110,18 +110,27 @@ const ChatInterface = () => {
 
     try {
       // Convert attachments to base64 for API
-      const imageData: { data: string; type: string }[] = [];
+      const fileData: { data: string; type: string; mimeType: string }[] = [];
       
       for (const attachment of currentAttachments) {
         if (attachment.type === "image" && attachment.preview) {
-          imageData.push({
+          fileData.push({
             data: attachment.preview,
-            type: "image"
+            type: "image",
+            mimeType: attachment.file.type
           });
         } else if (attachment.type === "pdf") {
-          // For PDFs, we'll need to inform the user they should be converted to images
-          // or we can try to extract text (for now, show a message)
-          toast.info("PDF support: Please upload images of the wine list pages for best results");
+          // Read PDF as base64
+          const base64 = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as string);
+            reader.readAsDataURL(attachment.file);
+          });
+          fileData.push({
+            data: base64,
+            type: "pdf",
+            mimeType: "application/pdf"
+          });
         }
       }
 
@@ -140,7 +149,7 @@ const ChatInterface = () => {
 
       await streamWineChat({
         messages: messageHistory,
-        imageData: imageData.length > 0 ? imageData : undefined,
+        fileData: fileData.length > 0 ? fileData : undefined,
         onDelta: (chunk) => {
           assistantContent += chunk;
           setPendingResponse(assistantContent);
