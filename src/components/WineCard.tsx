@@ -104,7 +104,7 @@ const WineCard = ({ wine }: WineCardProps) => {
           <div className="flex items-start justify-between gap-2 mb-1">
             <div>
               <h4 className="font-semibold text-foreground text-lg leading-tight">
-                {wine.name} {wine.year}
+                {wine.name}{wine.year && wine.year !== "N/A" ? ` ${wine.year}` : ""}
               </h4>
               <p className="text-sm text-muted-foreground">{wine.region}</p>
             </div>

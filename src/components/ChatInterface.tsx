@@ -177,8 +177,8 @@ const ChatInterface = () => {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
       e.preventDefault();
       handleSend();
     }
@@ -346,8 +346,8 @@ const ChatInterface = () => {
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Ask about wine pairings, recommendations, or upload images/PDFs..."
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about wine pairings, recommendations, or upload images/PDFs... (Ctrl+Enter to send)"
               className="min-h-[60px] max-h-[120px] resize-none"
               disabled={isLoading}
             />
