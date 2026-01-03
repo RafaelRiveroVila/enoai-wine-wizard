@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Wine, User, Paperclip, X, FileText } from "lucide-react";
+import { Send, Wine, User, Paperclip, X, FileText, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
 import WineRecommendationDisplay, { parseWineRecommendation } from "./WineRecommendationDisplay";
@@ -34,6 +34,18 @@ const ChatInterface = () => {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const clearChat = () => {
+    setMessages([
+      {
+        role: "assistant",
+        content: "Hello! I'm enoAI, your wine sommelier assistant. I can help you choose the perfect wine for any occasion. You can also upload images of wine labels or PDF wine lists for recommendations. What would you like to know about wine today?",
+      },
+    ]);
+    setInput("");
+    setAttachments([]);
+    setPendingResponse("");
   };
 
   useEffect(() => {
@@ -175,6 +187,17 @@ const ChatInterface = () => {
           <p className="text-muted-foreground">
             Ask me anything about wine selection, pairings, or recommendations
           </p>
+          {messages.length > 1 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={clearChat}
+              className="mt-4 text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="w-4 h-4 mr-2" />
+              New Chat
+            </Button>
+          )}
         </div>
 
         {/* Chat Messages */}
