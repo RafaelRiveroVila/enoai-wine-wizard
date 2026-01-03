@@ -28,7 +28,7 @@ const ChatInterface = () => {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [attachments, setAttachments] = useState<FileAttachment[]>([]);
-  const [streamingContent, setStreamingContent] = useState("");
+  const [pendingResponse, setPendingResponse] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -38,7 +38,7 @@ const ChatInterface = () => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, streamingContent]);
+  }, [messages]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -131,28 +131,28 @@ const ChatInterface = () => {
         imageData: imageData.length > 0 ? imageData : undefined,
         onDelta: (chunk) => {
           assistantContent += chunk;
-          setStreamingContent(assistantContent);
+          setPendingResponse(assistantContent);
         },
         onDone: () => {
           setMessages((prev) => [
             ...prev,
             { role: "assistant", content: assistantContent }
           ]);
-          setStreamingContent("");
+          setPendingResponse("");
           setIsLoading(false);
         },
         onError: (error) => {
           console.error("Chat error:", error);
           toast.error(`Error: ${error}`);
           setIsLoading(false);
-          setStreamingContent("");
+          setPendingResponse("");
         }
       });
     } catch (error) {
       console.error("Error sending message:", error);
       toast.error("Failed to send message. Please try again.");
       setIsLoading(false);
-      setStreamingContent("");
+      setPendingResponse("");
     }
   };
 
@@ -239,26 +239,19 @@ const ChatInterface = () => {
                 )}
               </div>
             ))}
-            {isLoading && streamingContent && (
+            {isLoading && (
               <div className="flex gap-3 justify-start animate-in fade-in">
                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
                   <Wine className="w-4 h-4 text-primary" />
                 </div>
-                <div className="bg-muted text-foreground rounded-2xl px-4 py-3 border border-border max-w-[80%]">
-                  <p className="text-sm leading-relaxed">{streamingContent}<span className="inline-block w-1 h-4 bg-primary ml-1 animate-pulse" /></p>
-                </div>
-              </div>
-            )}
-            {isLoading && !streamingContent && (
-              <div className="flex gap-3 justify-start animate-in fade-in">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
-                  <Wine className="w-4 h-4 text-primary animate-pulse" />
-                </div>
                 <div className="bg-muted text-foreground rounded-2xl px-4 py-3 border border-border">
-                  <div className="flex gap-1">
-                    <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" />
-                    <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.2s]" />
-                    <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.4s]" />
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1">
+                      <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce" />
+                      <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.2s]" />
+                      <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.4s]" />
+                    </div>
+                    <span className="text-sm text-muted-foreground">Finding the perfect wines...</span>
                   </div>
                 </div>
               </div>
