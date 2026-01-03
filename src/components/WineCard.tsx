@@ -1,6 +1,6 @@
 import { Wine, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
-
+import { useUser } from "@/contexts/UserContext";
 export interface WineRecommendation {
   name: string;
   year: string;
@@ -57,6 +57,17 @@ const WineGlass = ({ fill }: WineGlassProps) => {
 };
 
 const WineCard = ({ wine }: WineCardProps) => {
+  const { addFavorite, removeFavorite, isFavorite } = useUser();
+  const favorited = isFavorite(wine.name);
+
+  const handleToggleFavorite = () => {
+    if (favorited) {
+      removeFavorite(wine.name);
+    } else {
+      addFavorite(wine);
+    }
+  };
+
   const renderBodyStrength = (strength: number) => {
     const glasses = [];
     for (let i = 1; i <= 5; i++) {
@@ -97,8 +108,17 @@ const WineCard = ({ wine }: WineCardProps) => {
               </h4>
               <p className="text-sm text-muted-foreground">{wine.region}</p>
             </div>
-            <button className="flex-shrink-0 p-1.5 hover:bg-muted rounded-full transition-colors">
-              <Heart className="w-4 h-4 text-muted-foreground" />
+            <button 
+              onClick={handleToggleFavorite}
+              className="flex-shrink-0 p-1.5 hover:bg-muted rounded-full transition-colors"
+            >
+              <Heart 
+                className={`w-4 h-4 transition-colors ${
+                  favorited 
+                    ? "text-destructive fill-destructive" 
+                    : "text-muted-foreground"
+                }`} 
+              />
             </button>
           </div>
 
