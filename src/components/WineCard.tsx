@@ -1,4 +1,4 @@
-import { Wine, Star, Heart } from "lucide-react";
+import { Wine, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 
 export interface WineRecommendation {
@@ -9,7 +9,7 @@ export interface WineRecommendation {
   style: string[];
   aromas: string[];
   flavourProfile: string[];
-  bodyStrength: number; // 1-5
+  bodyStrength: number; // 0-5, increments of 0.5
   imageUrl?: string;
 }
 
@@ -17,22 +17,58 @@ interface WineCardProps {
   wine: WineRecommendation;
 }
 
+interface WineGlassProps {
+  fill: 'full' | 'half' | 'empty';
+}
+
+const WineGlass = ({ fill }: WineGlassProps) => {
+  return (
+    <svg
+      viewBox="0 0 24 32"
+      className="w-5 h-6"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      {/* Glass outline */}
+      <path
+        d="M6 2C6 2 4 8 4 12C4 16 7 19 11 19.8V28H7V30H17V28H13V19.8C17 19 20 16 20 12C20 8 18 2 18 2H6Z"
+        stroke="hsl(var(--primary))"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      {/* Wine fill - full */}
+      {fill === 'full' && (
+        <path
+          d="M6.5 8C6.5 8 5 11 5 12.5C5 15.5 7.5 18 11 18.5C11.5 18.55 12 18.55 12.5 18.5C16 18 18.5 15.5 18.5 12.5C18.5 11 17 8 17 8H6.5Z"
+          fill="hsl(var(--primary))"
+        />
+      )}
+      {/* Wine fill - half */}
+      {fill === 'half' && (
+        <path
+          d="M7 11C7 11 6 12.5 6 13.5C6 15.5 8 17.5 11 18C11.5 18.05 12 18.05 12.5 18C15.5 17.5 17.5 15.5 17.5 13.5C17.5 12.5 16.5 11 16.5 11H7Z"
+          fill="hsl(var(--primary))"
+        />
+      )}
+    </svg>
+  );
+};
+
 const WineCard = ({ wine }: WineCardProps) => {
-  const renderStars = (count: number) => {
-    return (
-      <div className="flex gap-0.5">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`w-4 h-4 ${
-              star <= count
-                ? "fill-yellow-400 text-yellow-400"
-                : "text-muted-foreground/30"
-            }`}
-          />
-        ))}
-      </div>
-    );
+  const renderBodyStrength = (strength: number) => {
+    const glasses = [];
+    for (let i = 1; i <= 5; i++) {
+      if (strength >= i) {
+        glasses.push(<WineGlass key={i} fill="full" />);
+      } else if (strength >= i - 0.5) {
+        glasses.push(<WineGlass key={i} fill="half" />);
+      } else {
+        glasses.push(<WineGlass key={i} fill="empty" />);
+      }
+    }
+    return <div className="flex gap-0.5">{glasses}</div>;
   };
 
   return (
@@ -101,7 +137,7 @@ const WineCard = ({ wine }: WineCardProps) => {
             {/* Body / Strength */}
             <div>
               <p className="text-xs text-muted-foreground mb-0.5">Body / Strength</p>
-              {renderStars(wine.bodyStrength)}
+              {renderBodyStrength(wine.bodyStrength)}
             </div>
           </div>
         </div>
