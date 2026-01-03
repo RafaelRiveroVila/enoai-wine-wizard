@@ -31,7 +31,7 @@ const ProfilePanel = ({ open, onOpenChange }: ProfilePanelProps) => {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="left" className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
         <SheetHeader className="text-left pb-4">
           <SheetTitle className="sr-only">Profile</SheetTitle>
         </SheetHeader>
