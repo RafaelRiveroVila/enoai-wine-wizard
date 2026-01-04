@@ -11,6 +11,8 @@ export interface WineRecommendation {
   flavourProfile: string[];
   bodyStrength: number; // 0-5, increments of 0.5
   imageUrl?: string;
+  price?: string;
+  grape?: string;
 }
 
 interface WineCardProps {
@@ -107,19 +109,27 @@ const WineCard = ({ wine }: WineCardProps) => {
                 {wine.name}{wine.year && wine.year !== "N/A" ? ` ${wine.year}` : ""}
               </h4>
               <p className="text-sm text-muted-foreground">{wine.region}</p>
+              {wine.grape && wine.grape !== "N/A" && (
+                <p className="text-sm text-primary font-medium">{wine.grape}</p>
+              )}
             </div>
-            <button 
-              onClick={handleToggleFavorite}
-              className="flex-shrink-0 p-1.5 hover:bg-muted rounded-full transition-colors"
-            >
-              <Heart 
-                className={`w-4 h-4 transition-colors ${
-                  favorited 
-                    ? "text-destructive fill-destructive" 
-                    : "text-muted-foreground"
-                }`} 
-              />
-            </button>
+            <div className="flex flex-col items-end gap-1">
+              {wine.price && wine.price !== "N/A" && (
+                <span className="text-sm font-semibold text-foreground">{wine.price}</span>
+              )}
+              <button 
+                onClick={handleToggleFavorite}
+                className="flex-shrink-0 p-1.5 hover:bg-muted rounded-full transition-colors"
+              >
+                <Heart 
+                  className={`w-4 h-4 transition-colors ${
+                    favorited 
+                      ? "text-destructive fill-destructive" 
+                      : "text-muted-foreground"
+                  }`} 
+                />
+              </button>
+            </div>
           </div>
 
           {/* Grid of Details */}

@@ -84,7 +84,7 @@ const FavoriteWineCard = ({ wine, onRemove }: FavoriteWineCardProps) => {
         {/* Wine info */}
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-foreground text-sm leading-tight">
-            {wine.name} {wine.year}
+            {wine.name}{wine.year && wine.year !== "N/A" ? ` ${wine.year}` : ""}
           </h4>
           <p className="text-xs text-muted-foreground mt-0.5">{wine.region}</p>
 
