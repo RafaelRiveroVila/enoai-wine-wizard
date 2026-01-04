@@ -87,6 +87,9 @@ const FavoriteWineCard = ({ wine, onRemove }: FavoriteWineCardProps) => {
             {wine.name}{wine.year && wine.year !== "N/A" ? ` ${wine.year}` : ""}
           </h4>
           <p className="text-xs text-muted-foreground mt-0.5">{wine.region}</p>
+          {wine.grape && wine.grape !== "N/A" && (
+            <p className="text-xs text-primary font-medium">{wine.grape}</p>
+          )}
 
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">

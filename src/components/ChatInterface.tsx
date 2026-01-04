@@ -5,7 +5,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Send, Wine, User, Paperclip, X, FileText, RotateCcw } from "lucide-react";
 import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
+import { useLanguage } from "@/contexts/LanguageContext";
 import WineRecommendationDisplay, { parseWineRecommendation } from "./WineRecommendationDisplay";
+
 interface FileAttachment {
   file: File;
   preview?: string;
@@ -19,10 +21,14 @@ interface Message {
 }
 
 const ChatInterface = () => {
+  const { t, language } = useLanguage();
+  
+  const getWelcomeMessage = () => t.welcomeMessage;
+
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      content: "Hello! I'm enoAI, your wine sommelier assistant. I can help you choose the perfect wine for any occasion. You can also upload images of wine labels or PDF wine lists for recommendations. What would you like to know about wine today?",
+      content: getWelcomeMessage(),
     },
   ]);
   const [input, setInput] = useState("");
@@ -32,6 +38,16 @@ const ChatInterface = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Update welcome message when language changes
+  useEffect(() => {
+    setMessages((prev) => {
+      if (prev.length === 1 && prev[0].role === "assistant") {
+        return [{ role: "assistant", content: getWelcomeMessage() }];
+      }
+      return prev;
+    });
+  }, [language]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -40,7 +56,7 @@ const ChatInterface = () => {
     setMessages([
       {
         role: "assistant",
-        content: "Hello! I'm enoAI, your wine sommelier assistant. I can help you choose the perfect wine for any occasion. You can also upload images of wine labels or PDF wine lists for recommendations. What would you like to know about wine today?",
+        content: getWelcomeMessage(),
       },
     ]);
     setInput("");
@@ -78,7 +94,7 @@ const ChatInterface = () => {
           },
         ]);
       } else {
-        toast.error("Only images and PDF files are supported");
+        toast.error(t.onlyImagesAndPdfs);
       }
     }
     
@@ -97,7 +113,7 @@ const ChatInterface = () => {
 
     const userMessage: Message = { 
       role: "user", 
-      content: input || "Please analyze this wine list and provide recommendations.",
+      content: input || t.analyzePrompt,
       attachments: attachments.length > 0 ? [...attachments] : undefined
     };
     
@@ -144,7 +160,7 @@ const ChatInterface = () => {
       
       messageHistory.push({
         role: "user",
-        content: currentInput || "Please analyze this wine list and provide recommendations."
+        content: currentInput || t.analyzePrompt
       });
 
       await streamWineChat({
@@ -171,7 +187,7 @@ const ChatInterface = () => {
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      toast.error("Failed to send message. Please try again.");
+      toast.error(t.errorSending);
       setIsLoading(false);
       setPendingResponse("");
     }
@@ -191,10 +207,10 @@ const ChatInterface = () => {
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <Wine className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl font-bold">Chat with enoAI</h2>
+            <h2 className="text-3xl font-bold">{t.chatTitle}</h2>
           </div>
           <p className="text-muted-foreground">
-            Ask me anything about wine selection, pairings, or recommendations
+            {t.chatSubtitle}
           </p>
           {messages.length > 1 && (
             <Button
@@ -204,7 +220,7 @@ const ChatInterface = () => {
               className="mt-4 text-muted-foreground hover:text-foreground"
             >
               <RotateCcw className="w-4 h-4 mr-2" />
-              New Chat
+              {t.newChat}
             </Button>
           )}
         </div>
@@ -283,7 +299,7 @@ const ChatInterface = () => {
                       <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.2s]" />
                       <div className="w-2 h-2 rounded-full bg-primary/60 animate-bounce [animation-delay:0.4s]" />
                     </div>
-                    <span className="text-sm text-muted-foreground">Finding the perfect wines...</span>
+                    <span className="text-sm text-muted-foreground">{t.findingWines}</span>
                   </div>
                 </div>
               </div>
@@ -347,7 +363,7 @@ const ChatInterface = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Ask about wine pairings, recommendations, or upload images/PDFs... (Ctrl+Enter to send)"
+              placeholder={t.chatPlaceholder}
               className="min-h-[60px] max-h-[120px] resize-none"
               disabled={isLoading}
             />

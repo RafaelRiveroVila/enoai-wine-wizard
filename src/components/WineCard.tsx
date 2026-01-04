@@ -1,6 +1,8 @@
 import { Wine, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useUser } from "@/contexts/UserContext";
+import { useLanguage } from "@/contexts/LanguageContext";
+
 export interface WineRecommendation {
   name: string;
   year: string;
@@ -60,6 +62,7 @@ const WineGlass = ({ fill }: WineGlassProps) => {
 
 const WineCard = ({ wine }: WineCardProps) => {
   const { addFavorite, removeFavorite, isFavorite } = useUser();
+  const { t } = useLanguage();
   const favorited = isFavorite(wine.name);
 
   const handleToggleFavorite = () => {
@@ -136,13 +139,13 @@ const WineCard = ({ wine }: WineCardProps) => {
           <div className="grid grid-cols-2 gap-x-6 gap-y-3 mt-4">
             {/* Category */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">Category</p>
+              <p className="text-xs text-muted-foreground mb-0.5">{t.category}</p>
               <p className="text-sm font-medium text-foreground">{wine.category}</p>
             </div>
 
             {/* Aromas */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">Aromas</p>
+              <p className="text-xs text-muted-foreground mb-0.5">{t.aromas}</p>
               <p className="text-sm text-foreground">
                 {wine.aromas.join(" · ")}
               </p>
@@ -150,7 +153,7 @@ const WineCard = ({ wine }: WineCardProps) => {
 
             {/* Style */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">Style</p>
+              <p className="text-xs text-muted-foreground mb-0.5">{t.style}</p>
               <p className="text-sm text-foreground">
                 {wine.style.join(" · ")}
               </p>
@@ -158,7 +161,7 @@ const WineCard = ({ wine }: WineCardProps) => {
 
             {/* Flavour Profile */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">Flavour Profile</p>
+              <p className="text-xs text-muted-foreground mb-0.5">{t.flavourProfile}</p>
               <p className="text-sm text-foreground">
                 {wine.flavourProfile.join(" · ")}
               </p>
@@ -166,7 +169,7 @@ const WineCard = ({ wine }: WineCardProps) => {
 
             {/* Body / Strength */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">Body / Strength</p>
+              <p className="text-xs text-muted-foreground mb-0.5">{t.bodyStrength}</p>
               {renderBodyStrength(wine.bodyStrength)}
             </div>
           </div>
