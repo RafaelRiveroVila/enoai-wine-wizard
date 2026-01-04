@@ -38,6 +38,18 @@ interface Translations {
   flavourProfile: string;
   bodyStrength: string;
 
+  // Wine Recommendation
+  whyTheseWines: string;
+
+  // Wine Categories (for translation)
+  categoryRedWine: string;
+  categoryWhiteWine: string;
+  categoryRose: string;
+  categorySparkling: string;
+  categoryDessertWine: string;
+  categoryFortifiedWine: string;
+  categoryOrangeWine: string;
+
   // Language
   language: string;
   english: string;
@@ -81,6 +93,18 @@ const translations: Record<Language, Translations> = {
     flavourProfile: "Flavour Profile",
     bodyStrength: "Body / Strength",
 
+    // Wine Recommendation
+    whyTheseWines: "Why These Wines?",
+
+    // Wine Categories
+    categoryRedWine: "Red Wine",
+    categoryWhiteWine: "White Wine",
+    categoryRose: "Rosé",
+    categorySparkling: "Sparkling",
+    categoryDessertWine: "Dessert Wine",
+    categoryFortifiedWine: "Fortified Wine",
+    categoryOrangeWine: "Orange Wine",
+
     // Language
     language: "Language",
     english: "English",
@@ -122,6 +146,18 @@ const translations: Record<Language, Translations> = {
     flavourProfile: "Perfil de Sabor",
     bodyStrength: "Cuerpo / Intensidad",
 
+    // Wine Recommendation
+    whyTheseWines: "¿Por Qué Estos Vinos?",
+
+    // Wine Categories
+    categoryRedWine: "Vino Tinto",
+    categoryWhiteWine: "Vino Blanco",
+    categoryRose: "Rosado",
+    categorySparkling: "Espumoso",
+    categoryDessertWine: "Vino de Postre",
+    categoryFortifiedWine: "Vino Fortificado",
+    categoryOrangeWine: "Vino Naranja",
+
     // Language
     language: "Idioma",
     english: "Inglés",
@@ -133,12 +169,33 @@ interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: Translations;
+  translateCategory: (category: string) => string;
 }
+
+const categoryMap: Record<string, keyof Translations> = {
+  "red wine": "categoryRedWine",
+  "white wine": "categoryWhiteWine",
+  "rosé": "categoryRose",
+  "rose": "categoryRose",
+  "sparkling": "categorySparkling",
+  "sparkling wine": "categorySparkling",
+  "dessert wine": "categoryDessertWine",
+  "fortified wine": "categoryFortifiedWine",
+  "orange wine": "categoryOrangeWine",
+};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguage] = useState<Language>("en");
+
+  const translateCategory = (category: string): string => {
+    const key = categoryMap[category.toLowerCase()];
+    if (key) {
+      return translations[language][key];
+    }
+    return category;
+  };
 
   return (
     <LanguageContext.Provider
@@ -146,6 +203,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         language,
         setLanguage,
         t: translations[language],
+        translateCategory,
       }}
     >
       {children}

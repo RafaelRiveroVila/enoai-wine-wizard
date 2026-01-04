@@ -1,6 +1,7 @@
 import { X, Wine } from "lucide-react";
 import { WineRecommendation } from "@/components/WineCard";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 interface FavoriteWineCardProps {
   wine: WineRecommendation;
@@ -44,6 +45,8 @@ const WineGlass = ({ fill }: WineGlassProps) => {
 };
 
 const FavoriteWineCard = ({ wine, onRemove }: FavoriteWineCardProps) => {
+  const { t, translateCategory } = useLanguage();
+
   const renderBodyStrength = (strength: number) => {
     const glasses = [];
     for (let i = 1; i <= 5; i++) {
@@ -93,18 +96,18 @@ const FavoriteWineCard = ({ wine, onRemove }: FavoriteWineCardProps) => {
 
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="secondary" className="text-xs bg-primary/10 text-primary border-0">
-              {wine.category}
+              {translateCategory(wine.category)}
             </Badge>
             {renderBodyStrength(wine.bodyStrength)}
           </div>
 
           <div className="mt-2">
-            <p className="text-xs text-muted-foreground">Style</p>
+            <p className="text-xs text-muted-foreground">{t.style}</p>
             <p className="text-xs text-foreground">{wine.style.join(" · ")}</p>
           </div>
 
           <div className="mt-1">
-            <p className="text-xs text-muted-foreground">Aromas</p>
+            <p className="text-xs text-muted-foreground">{t.aromas}</p>
             <p className="text-xs text-foreground">{wine.aromas.join(" · ")}</p>
           </div>
         </div>
