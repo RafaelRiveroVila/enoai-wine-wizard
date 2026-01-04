@@ -38,6 +38,8 @@ RESPONSE FORMAT (ALWAYS use this format when recommending wines):
       "year": "2020",
       "region": "Region, Country",
       "category": "Red Wine",
+      "grape": "Cabernet Sauvignon",
+      "price": "€45",
       "style": ["Elegant", "Complex", "Refined"],
       "aromas": ["Blackcurrant", "Violet", "Cedar", "Tobacco"],
       "flavourProfile": ["Smooth", "Balanced", "Silky tannins"],
@@ -54,7 +56,9 @@ IMPORTANT RULES:
 - "flavourProfile" should have 2-3 taste descriptors
 - "bodyStrength" is a number from 1 to 5 (1=light, 5=full-bodied)
 - "category" examples: "Red Wine", "White Wine", "Rosé", "Sparkling", "Dessert Wine"
-- When users provide images of wine lists, only recommend wines FROM that list
+- "grape" is the grape variety (e.g., "Garnacha", "Cabernet Sauvignon", "Merlot"). Only include if known, otherwise omit.
+- "price" is the price from the menu. Only include if visible on the menu, otherwise omit.
+- When users provide images of wine lists, only recommend wines FROM that list and include the price if shown
 
 For general conversation that doesn't require wine recommendations, respond naturally without the JSON format.
 
