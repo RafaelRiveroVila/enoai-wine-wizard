@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/contexts/LanguageContext";
 import wineHero from "@/assets/wine-hero.jpg";
 import enoaiLogo from "@/assets/enoai-logo.png";
 
@@ -7,6 +8,8 @@ interface HeroProps {
 }
 
 const Hero = ({ onStartChat }: HeroProps) => {
+  const { t } = useLanguage();
+
   return (
     <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden">
       {/* Background Image */}
@@ -39,22 +42,22 @@ const Hero = ({ onStartChat }: HeroProps) => {
 
         {/* Subheading */}
         <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-          Your personal wine sommelier powered by AI. Discover the perfect wine for any occasion, meal, or moment.
+          {t.heroSubheading}
         </p>
 
         {/* Features */}
         <div className="flex flex-wrap gap-4 justify-center text-sm md:text-base text-muted-foreground">
           <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
             <div className="w-2 h-2 rounded-full bg-accent" />
-            <span>Personalized Recommendations</span>
+            <span>{t.heroFeature1}</span>
           </div>
           <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
             <div className="w-2 h-2 rounded-full bg-accent" />
-            <span>Food Pairing Expert</span>
+            <span>{t.heroFeature2}</span>
           </div>
           <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
             <div className="w-2 h-2 rounded-full bg-accent" />
-            <span>Budget-Friendly Options</span>
+            <span>{t.heroFeature3}</span>
           </div>
         </div>
 
@@ -66,7 +69,7 @@ const Hero = ({ onStartChat }: HeroProps) => {
             onClick={onStartChat}
             className="text-lg px-8 py-6 h-auto"
           >
-            Start Your Wine Journey
+            {t.heroCta}
           </Button>
         </div>
       </div>
