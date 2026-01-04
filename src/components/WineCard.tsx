@@ -62,7 +62,7 @@ const WineGlass = ({ fill }: WineGlassProps) => {
 
 const WineCard = ({ wine }: WineCardProps) => {
   const { addFavorite, removeFavorite, isFavorite } = useUser();
-  const { t } = useLanguage();
+  const { t, translateCategory } = useLanguage();
   const favorited = isFavorite(wine.name);
 
   const handleToggleFavorite = () => {
@@ -140,7 +140,7 @@ const WineCard = ({ wine }: WineCardProps) => {
             {/* Category */}
             <div>
               <p className="text-xs text-muted-foreground mb-0.5">{t.category}</p>
-              <p className="text-sm font-medium text-foreground">{wine.category}</p>
+              <p className="text-sm font-medium text-foreground">{translateCategory(wine.category)}</p>
             </div>
 
             {/* Aromas */}
