@@ -89,9 +89,9 @@ const WineCard = ({ wine }: WineCardProps) => {
 
   return (
     <Card className="p-3 sm:p-5 bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex gap-3 sm:gap-4">
-        {/* Wine Image/Placeholder */}
-        <div className="flex-shrink-0 w-14 h-18 sm:w-24 sm:h-28 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20 flex items-center justify-center overflow-hidden">
+      <div className="flex gap-2 sm:gap-4">
+        {/* Wine Image/Placeholder - smaller on mobile */}
+        <div className="flex-shrink-0 w-10 h-14 sm:w-24 sm:h-28 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20 flex items-center justify-center overflow-hidden">
           {wine.imageUrl ? (
             <img 
               src={wine.imageUrl} 
@@ -99,26 +99,26 @@ const WineCard = ({ wine }: WineCardProps) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <Wine className="w-6 h-6 sm:w-10 sm:h-10 text-primary" />
+            <Wine className="w-5 h-5 sm:w-10 sm:h-10 text-primary" />
           )}
         </div>
 
         {/* Wine Details */}
-        <div className="flex-1 min-w-0">
+        <div className="flex-1 min-w-0 overflow-hidden">
           {/* Header */}
           <div className="flex items-start justify-between gap-1 sm:gap-2 mb-1">
-            <div className="min-w-0 flex-1">
-              <h4 className="font-semibold text-foreground text-sm sm:text-lg leading-tight truncate">
+            <div className="min-w-0 flex-1 overflow-hidden">
+              <h4 className="font-semibold text-foreground text-sm sm:text-lg leading-snug break-words hyphens-auto">
                 {wine.name}{wine.year && wine.year !== "N/A" ? ` ${wine.year}` : ""}
               </h4>
-              <p className="text-xs sm:text-sm text-muted-foreground truncate">{wine.region}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground break-words">{wine.region}</p>
               {wine.grape && wine.grape !== "N/A" && (
-                <p className="text-xs sm:text-sm text-primary font-medium truncate">{wine.grape}</p>
+                <p className="text-xs sm:text-sm text-primary font-medium break-words">{wine.grape}</p>
               )}
             </div>
-            <div className="flex flex-col items-end gap-0.5 sm:gap-1 flex-shrink-0">
+            <div className="flex flex-col items-end gap-0.5 sm:gap-1 flex-shrink-0 ml-1">
               {wine.price && wine.price !== "N/A" && (
-                <span className="text-xs sm:text-sm font-semibold text-foreground">{wine.price}</span>
+                <span className="text-xs sm:text-sm font-semibold text-foreground whitespace-nowrap">{wine.price}</span>
               )}
               <button 
                 onClick={handleToggleFavorite}
