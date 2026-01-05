@@ -29,7 +29,7 @@ const WineGlass = ({ fill }: WineGlassProps) => {
   return (
     <svg
       viewBox="0 0 24 32"
-      className="w-5 h-6"
+      className="w-4 h-5 sm:w-5 sm:h-6"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
@@ -88,10 +88,10 @@ const WineCard = ({ wine }: WineCardProps) => {
   };
 
   return (
-    <Card className="p-5 bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex gap-4">
+    <Card className="p-3 sm:p-5 bg-card border border-border shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex gap-3 sm:gap-4">
         {/* Wine Image/Placeholder */}
-        <div className="flex-shrink-0 w-24 h-28 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20 flex items-center justify-center overflow-hidden">
+        <div className="flex-shrink-0 w-14 h-18 sm:w-24 sm:h-28 rounded-lg bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20 flex items-center justify-center overflow-hidden">
           {wine.imageUrl ? (
             <img 
               src={wine.imageUrl} 
@@ -99,33 +99,33 @@ const WineCard = ({ wine }: WineCardProps) => {
               className="w-full h-full object-cover"
             />
           ) : (
-            <Wine className="w-10 h-10 text-primary" />
+            <Wine className="w-6 h-6 sm:w-10 sm:h-10 text-primary" />
           )}
         </div>
 
         {/* Wine Details */}
         <div className="flex-1 min-w-0">
           {/* Header */}
-          <div className="flex items-start justify-between gap-2 mb-1">
-            <div>
-              <h4 className="font-semibold text-foreground text-lg leading-tight">
+          <div className="flex items-start justify-between gap-1 sm:gap-2 mb-1">
+            <div className="min-w-0 flex-1">
+              <h4 className="font-semibold text-foreground text-sm sm:text-lg leading-tight truncate">
                 {wine.name}{wine.year && wine.year !== "N/A" ? ` ${wine.year}` : ""}
               </h4>
-              <p className="text-sm text-muted-foreground">{wine.region}</p>
+              <p className="text-xs sm:text-sm text-muted-foreground truncate">{wine.region}</p>
               {wine.grape && wine.grape !== "N/A" && (
-                <p className="text-sm text-primary font-medium">{wine.grape}</p>
+                <p className="text-xs sm:text-sm text-primary font-medium truncate">{wine.grape}</p>
               )}
             </div>
-            <div className="flex flex-col items-end gap-1">
+            <div className="flex flex-col items-end gap-0.5 sm:gap-1 flex-shrink-0">
               {wine.price && wine.price !== "N/A" && (
-                <span className="text-sm font-semibold text-foreground">{wine.price}</span>
+                <span className="text-xs sm:text-sm font-semibold text-foreground">{wine.price}</span>
               )}
               <button 
                 onClick={handleToggleFavorite}
-                className="flex-shrink-0 p-1.5 hover:bg-muted rounded-full transition-colors"
+                className="flex-shrink-0 p-1 sm:p-1.5 hover:bg-muted rounded-full transition-colors"
               >
                 <Heart 
-                  className={`w-4 h-4 transition-colors ${
+                  className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors ${
                     favorited 
                       ? "text-destructive fill-destructive" 
                       : "text-muted-foreground"
@@ -136,40 +136,40 @@ const WineCard = ({ wine }: WineCardProps) => {
           </div>
 
           {/* Grid of Details */}
-          <div className="grid grid-cols-2 gap-x-6 gap-y-3 mt-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-1.5 sm:gap-y-3 mt-2 sm:mt-4">
             {/* Category */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">{t.category}</p>
-              <p className="text-sm font-medium text-foreground">{translateCategory(wine.category)}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{t.category}</p>
+              <p className="text-xs sm:text-sm font-medium text-foreground">{translateCategory(wine.category)}</p>
             </div>
 
             {/* Aromas */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">{t.aromas}</p>
-              <p className="text-sm text-foreground">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{t.aromas}</p>
+              <p className="text-xs sm:text-sm text-foreground line-clamp-2">
                 {wine.aromas.join(" · ")}
               </p>
             </div>
 
             {/* Style */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">{t.style}</p>
-              <p className="text-sm text-foreground">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{t.style}</p>
+              <p className="text-xs sm:text-sm text-foreground">
                 {wine.style.join(" · ")}
               </p>
             </div>
 
             {/* Flavour Profile */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">{t.flavourProfile}</p>
-              <p className="text-sm text-foreground">
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{t.flavourProfile}</p>
+              <p className="text-xs sm:text-sm text-foreground">
                 {wine.flavourProfile.join(" · ")}
               </p>
             </div>
 
             {/* Body / Strength */}
             <div>
-              <p className="text-xs text-muted-foreground mb-0.5">{t.bodyStrength}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-0.5">{t.bodyStrength}</p>
               {renderBodyStrength(wine.bodyStrength)}
             </div>
           </div>
