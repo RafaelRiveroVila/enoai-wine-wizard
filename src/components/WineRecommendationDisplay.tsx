@@ -2,6 +2,7 @@ import { Sparkles } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/contexts/LanguageContext";
 import WineCard, { WineRecommendation } from "./WineCard";
+import MarkdownContent from "./MarkdownContent";
 
 export interface WineRecommendationResponse {
   explanation: string;
@@ -21,11 +22,9 @@ const WineRecommendationDisplay = ({ data }: WineRecommendationDisplayProps) => 
       <Card className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/30 dark:to-pink-950/30 border border-border">
         <div className="flex items-start gap-3">
           <Sparkles className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-          <div>
+          <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-foreground mb-2">{t.whyTheseWines}</h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {data.explanation}
-            </p>
+            <MarkdownContent content={data.explanation} className="text-muted-foreground" />
           </div>
         </div>
       </Card>

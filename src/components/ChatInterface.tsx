@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
 import { useLanguage } from "@/contexts/LanguageContext";
 import WineRecommendationDisplay, { parseWineRecommendation } from "./WineRecommendationDisplay";
+import MarkdownContent from "./MarkdownContent";
 
 interface FileAttachment {
   file: File;
@@ -276,7 +277,11 @@ const ChatInterface = () => {
                           : "bg-muted text-foreground border border-border"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                      {message.role === "assistant" ? (
+                        <MarkdownContent content={message.content} className="text-foreground" />
+                      ) : (
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                      )}
                     </div>
                   )}
                 </div>
