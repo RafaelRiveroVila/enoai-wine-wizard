@@ -32,7 +32,18 @@ An AI-powered wine recommendation chatbot that helps users discover wines based 
    bun install
    ```
 
-3. **Start the development server**
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory with the following:
+   ```env
+   VITE_SUPABASE_URL=https://xocflqvamviwgcowfnia.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvY2ZscXZhbXZpd2djb3dmbmlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIyNzY4MjcsImV4cCI6MjA3Nzg1MjgyN30.bDsk163chm_InxkcDgFs6NSUAHEx2wMa5wsMxVcUxMQ
+   VITE_SUPABASE_PROJECT_ID=xocflqvamviwgcowfnia
+   ```
+
+   > **Note**: The AI functionality is powered by Lovable Cloud's backend. The `LOVABLE_API_KEY` is configured on the server-side and doesn't need to be set locally.
+
+4. **Start the development server**
    ```bash
    npm run dev
    # or
