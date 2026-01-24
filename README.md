@@ -1,12 +1,13 @@
-# EnoAI - Wine Recommendation Assistant
+# EnoAI
 
-An AI-powered wine recommendation chatbot that helps users discover wines based on their preferences, food pairings, and occasions.
+EnoAI is an AI-powered personal wine assistant that helps users choose the right wine with expert-level guidance. By uploading a photo or PDF of a wine menu and briefly describing the meal, users receive tailored wine pairing recommendations along with insights into each selection, making the wine selection process simple, informed, and accessible both at home and in restaurants.
+
+This project represents an MVP of EnoAI and will continue to evolve with additional features and improvements in future iterations.
 
 ## Features
 
 - 🍷 AI-powered wine recommendations
-- 📸 Image recognition for wine labels
-- 🌍 Multi-language support (English, Spanish, Portuguese, French)
+- 🌍 Multi-language support 
 - 💬 Interactive chat interface
 - ⭐ Save favorite wines to your profile
 
@@ -20,10 +21,6 @@ An AI-powered wine recommendation chatbot that helps users discover wines based 
 ### Installation
 
 1. **Clone the repository**
-   ```bash
-   git clone <YOUR_GIT_URL>
-   cd <YOUR_PROJECT_NAME>
-   ```
 
 2. **Install dependencies**
    ```bash
