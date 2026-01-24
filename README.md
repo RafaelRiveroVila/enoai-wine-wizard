@@ -72,12 +72,3 @@ supabase/
 └── functions/        # Backend edge functions
 ```
 
-## Deployment
-
-Simply open [Lovable](https://lovable.dev/projects/e268321d-3edb-4071-a3ba-f9f0bd68f68e) and click on Share → Publish.
-
-## Custom Domain
-
-To connect a custom domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
