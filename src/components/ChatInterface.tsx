@@ -38,8 +38,9 @@ const ChatInterface = () => {
   const [pendingResponse, setPendingResponse] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const prevMessageCountRef = useRef(1);
 
-  // Update welcome message when language changes
+  // Update welcome message when language changes (without triggering scroll)
   useEffect(() => {
     setMessages((prev) => {
       if (prev.length === 1 && prev[0].role === "assistant") {
@@ -63,10 +64,15 @@ const ChatInterface = () => {
     setInput("");
     setAttachments([]);
     setPendingResponse("");
+    prevMessageCountRef.current = 1;
   };
 
+  // Only scroll when new messages are added, not when content is updated
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > prevMessageCountRef.current) {
+      scrollToBottom();
+    }
+    prevMessageCountRef.current = messages.length;
   }, [messages]);
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
