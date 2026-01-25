@@ -4,6 +4,9 @@ EnoAI is an AI-powered personal wine assistant that helps users choose the right
 
 This project represents an MVP of EnoAI and will continue to evolve with additional features and improvements in future iterations.
 
+## Capstone Video
+[▶️ Capstone video](https://github.com/RafaelRiveroVila/enoai-wine-wizard/releases/download/capstone/RafaelRiveroEnoAI.mp4)
+
 ## Features
 
 - 🍷 AI-powered wine recommendations
