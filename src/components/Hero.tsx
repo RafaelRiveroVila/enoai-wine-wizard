@@ -23,7 +23,7 @@ const Hero = ({ onStartChat }: HeroProps) => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-12 text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-12 text-center space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
         {/* Logo */}
         <div className="inline-flex items-center justify-center mb-2">
           <img 
@@ -34,19 +34,19 @@ const Hero = ({ onStartChat }: HeroProps) => {
         </div>
 
         {/* Heading */}
-        <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight">
           <span className="bg-gradient-to-r from-primary via-primary to-accent bg-clip-text text-transparent">
             enoAI
           </span>
         </h1>
 
         {/* Subheading */}
-        <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+        <p className="text-base sm:text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto leading-relaxed px-2">
           {t.heroSubheading}
         </p>
 
         {/* Features */}
-        <div className="flex flex-wrap gap-4 justify-center text-sm md:text-base text-muted-foreground">
+        <div className="flex flex-wrap gap-2 sm:gap-4 justify-center text-xs sm:text-sm md:text-base text-muted-foreground">
           <div className="flex items-center gap-2 bg-card/50 backdrop-blur-sm px-4 py-2 rounded-full border border-border">
             <div className="w-2 h-2 rounded-full bg-accent" />
             <span>{t.heroFeature1}</span>
