@@ -132,8 +132,10 @@ All colors MUST be HSL.
   *::-webkit-scrollbar {
     width: 6px;
     height: 6px;
+    background: transparent;
   }
-  *::-webkit-scrollbar-track {
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
     background: transparent;
   }
   *::-webkit-scrollbar-thumb {
