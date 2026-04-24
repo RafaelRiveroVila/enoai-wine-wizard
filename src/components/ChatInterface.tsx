@@ -208,7 +208,7 @@ const ChatInterface = () => {
   };
 
   return (
-    <section className="min-h-screen bg-background py-6 sm:py-12 px-3 sm:px-4">
+    <section className="min-h-screen bg-background pt-6 sm:pt-12 pb-2 sm:pb-12 px-3 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
