@@ -208,15 +208,15 @@ const ChatInterface = () => {
   };
 
   return (
-    <section className="min-h-screen bg-background py-12 px-4">
+    <section className="min-h-screen bg-background py-6 sm:py-12 px-3 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <Wine className="w-8 h-8 text-primary" />
-            <h2 className="text-3xl font-bold">{t.chatTitle}</h2>
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="inline-flex items-center gap-2 mb-3 sm:mb-4">
+            <Wine className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
+            <h2 className="text-2xl sm:text-3xl font-bold">{t.chatTitle}</h2>
           </div>
-          <p className="text-muted-foreground">
+          <p className="text-sm sm:text-base text-muted-foreground px-2">
             {t.chatSubtitle}
           </p>
           {messages.length > 1 && (
@@ -233,7 +233,7 @@ const ChatInterface = () => {
         </div>
 
         {/* Chat Messages */}
-        <Card className="mb-6 p-6 min-h-[500px] max-h-[600px] overflow-y-auto shadow-lg">
+        <Card className="mb-4 sm:mb-6 p-3 sm:p-6 min-h-[400px] sm:min-h-[500px] max-h-[60vh] sm:max-h-[600px] overflow-y-auto shadow-lg">
           <div className="space-y-4">
             {messages.map((message, index) => (
               <div
@@ -247,7 +247,7 @@ const ChatInterface = () => {
                     <Wine className="w-4 h-4 text-primary" />
                   </div>
                 )}
-                <div className="flex flex-col gap-2 max-w-[80%]">
+                <div className="flex flex-col gap-2 max-w-[85%] sm:max-w-[80%] min-w-0">
                   {message.attachments && message.attachments.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {message.attachments.map((attachment, attIndex) => (
@@ -320,7 +320,7 @@ const ChatInterface = () => {
         </Card>
 
         {/* Input Area */}
-        <Card className="p-4 shadow-lg">
+        <Card className="p-2 sm:p-4 shadow-lg">
           {attachments.length > 0 && (
             <div className="mb-3 flex flex-wrap gap-2">
               {attachments.map((attachment, index) => (
@@ -352,7 +352,7 @@ const ChatInterface = () => {
               ))}
             </div>
           )}
-          <div className="flex gap-3">
+          <div className="flex gap-2 sm:gap-3">
             <input
               ref={fileInputRef}
               type="file"
@@ -366,16 +366,16 @@ const ChatInterface = () => {
               disabled={isLoading}
               size="icon"
               variant="outline"
-              className="h-[60px] w-[60px] flex-shrink-0"
+              className="h-[48px] w-[48px] sm:h-[60px] sm:w-[60px] flex-shrink-0"
             >
-              <Paperclip className="w-5 h-5" />
+              <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={t.chatPlaceholder}
-              className="min-h-[60px] max-h-[120px] resize-none"
+              className="min-h-[48px] sm:min-h-[60px] max-h-[120px] resize-none text-base"
               disabled={isLoading}
             />
             <Button
@@ -383,9 +383,9 @@ const ChatInterface = () => {
               disabled={(!input.trim() && attachments.length === 0) || isLoading}
               size="icon"
               variant="hero"
-              className="h-[60px] w-[60px] flex-shrink-0"
+              className="h-[48px] w-[48px] sm:h-[60px] sm:w-[60px] flex-shrink-0"
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             </Button>
           </div>
         </Card>
