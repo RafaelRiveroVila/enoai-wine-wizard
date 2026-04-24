@@ -208,8 +208,8 @@ const ChatInterface = () => {
   };
 
   return (
-    <section className="bg-background pt-6 sm:min-h-screen sm:pt-12 pb-2 sm:pb-12 px-3 sm:px-4">
-      <div className="max-w-4xl mx-auto">
+    <section className="min-h-screen bg-background pt-6 sm:pt-12 pb-2 sm:pb-12 px-3 sm:px-4 flex flex-col">
+      <div className="max-w-4xl w-full mx-auto flex-1 flex flex-col">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 mb-3 sm:mb-4">
@@ -233,7 +233,7 @@ const ChatInterface = () => {
         </div>
 
         {/* Chat Messages */}
-        <Card className="mb-4 sm:mb-6 p-3 sm:p-6 min-h-[320px] sm:min-h-[500px] max-h-[60vh] sm:max-h-[600px] overflow-y-auto shadow-lg">
+        <Card className="mb-4 sm:mb-6 p-3 sm:p-6 flex-1 min-h-[320px] sm:min-h-[500px] sm:max-h-[600px] overflow-y-auto shadow-lg">
           <div className="space-y-4">
             {messages.map((message, index) => (
               <div
