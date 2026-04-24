@@ -248,6 +248,11 @@ const ChatInterface = () => {
                   </div>
                 )}
                 <div className="flex flex-col gap-2 max-w-[85%] sm:max-w-[80%] min-w-0">
+                  {message.role === "user" && message.attachments && message.attachments.length > 0 && (
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap rounded-2xl px-4 py-3 bg-primary text-primary-foreground self-end">
+                      {message.content}
+                    </p>
+                  )}
                   {message.attachments && message.attachments.length > 0 && (
                     <div className="flex flex-wrap gap-2">
                       {message.attachments.map((attachment, attIndex) => (
@@ -275,20 +280,16 @@ const ChatInterface = () => {
                   )}
                   {message.role === "assistant" && parseWineRecommendation(message.content) ? (
                     <WineRecommendationDisplay data={parseWineRecommendation(message.content)!} />
-                  ) : (
-                    <div
-                      className={`rounded-2xl px-4 py-3 ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground"
-                          : "bg-muted text-foreground border border-border"
-                      }`}
-                    >
-                      {message.role === "assistant" ? (
-                        <MarkdownContent content={message.content} className="text-foreground" />
-                      ) : (
-                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
-                      )}
+                  ) : message.role === "assistant" ? (
+                    <div className="rounded-2xl px-4 py-3 bg-muted text-foreground border border-border">
+                      <MarkdownContent content={message.content} className="text-foreground" />
                     </div>
+                  ) : (
+                    !(message.attachments && message.attachments.length > 0) && (
+                      <div className="rounded-2xl px-4 py-3 bg-primary text-primary-foreground">
+                        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+                      </div>
+                    )
                   )}
                 </div>
                 {message.role === "user" && (
