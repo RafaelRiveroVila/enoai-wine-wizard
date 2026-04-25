@@ -320,7 +320,9 @@ const ChatInterface = () => {
               </div>
             )}
             <div ref={messagesEndRef} />
+            </div>
           </div>
+          <ScrollPill targetRef={messagesScrollRef} />
         </Card>
 
         {/* Input Area */}
