@@ -117,26 +117,39 @@ All colors MUST be HSL.
 }
 
 @layer utilities {
-  /* Thin, auto-hiding scrollbars */
+  /* Thin, auto-hiding scrollbars with fully transparent track */
+  html,
+  body,
   * {
     scrollbar-width: thin;
     scrollbar-color: transparent transparent;
     transition: scrollbar-color 0.3s ease;
   }
+  html:hover,
+  body:hover,
   *:hover,
   *:focus-within,
   *:active {
     scrollbar-color: hsl(var(--muted-foreground) / 0.4) transparent;
   }
 
+  html::-webkit-scrollbar,
+  body::-webkit-scrollbar,
   *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-    background: transparent;
+    width: 6px !important;
+    height: 6px !important;
+    background: transparent !important;
+    background-color: transparent !important;
   }
+  html::-webkit-scrollbar-track,
+  body::-webkit-scrollbar-track,
   *::-webkit-scrollbar-track,
+  html::-webkit-scrollbar-corner,
+  body::-webkit-scrollbar-corner,
   *::-webkit-scrollbar-corner {
-    background: transparent;
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
   }
   *::-webkit-scrollbar-thumb {
     background-color: transparent;
