@@ -8,6 +8,7 @@ import { streamWineChat } from "@/lib/wineChat";
 import { useLanguage } from "@/contexts/LanguageContext";
 import WineRecommendationDisplay, { parseWineRecommendation } from "./WineRecommendationDisplay";
 import MarkdownContent from "./MarkdownContent";
+import ScrollPill from "./ScrollPill";
 
 interface FileAttachment {
   file: File;
@@ -39,6 +40,7 @@ const ChatInterface = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevMessageCountRef = useRef(1);
+  const messagesScrollRef = useRef<HTMLDivElement>(null);
 
   // Update welcome message when language changes (without triggering scroll)
   useEffect(() => {
@@ -233,8 +235,9 @@ const ChatInterface = () => {
         </div>
 
         {/* Chat Messages */}
-        <Card className="mb-4 sm:mb-6 p-3 sm:p-6 flex-1 min-h-[320px] sm:min-h-[500px] sm:max-h-[600px] overflow-y-auto shadow-lg">
-          <div className="space-y-4">
+        <Card className="mb-4 sm:mb-6 p-3 sm:p-6 flex-1 min-h-[320px] sm:min-h-[500px] sm:max-h-[600px] shadow-lg relative overflow-hidden">
+          <div ref={messagesScrollRef} className="absolute inset-0 p-3 sm:p-6 overflow-y-auto">
+            <div className="space-y-4">
             {messages.map((message, index) => (
               <div
                 key={index}
