@@ -361,6 +361,13 @@ const ChatInterface = () => {
                       alt="Preview"
                       className="max-w-[100px] max-h-[100px] object-cover"
                     />
+                  ) : attachment.type === "url" ? (
+                    <div className="px-3 py-2 flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground max-w-[200px] truncate">
+                        {attachment.url}
+                      </span>
+                    </div>
                   ) : (
                     <div className="px-3 py-2 flex items-center gap-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
