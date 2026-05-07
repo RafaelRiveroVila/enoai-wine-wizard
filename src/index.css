@@ -113,6 +113,12 @@ All colors MUST be HSL.
   html, body {
     @apply bg-background text-foreground;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
+    background-color: hsl(var(--background));
+  }
+  html {
+    /* Prevent iOS rubber-band exposing black area behind the page */
+    background-color: hsl(var(--background));
   }
 }
 
