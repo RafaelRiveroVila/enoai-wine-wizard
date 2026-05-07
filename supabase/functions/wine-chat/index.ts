@@ -75,43 +75,83 @@ Always be helpful, knowledgeable, and enthusiastic about wine.`
       // Handle the last message with potential images
       const lastMessage = messages[messages.length - 1];
       
-      if (fileData && fileData.length > 0) {
-        // Create a multimodal message with text and files (images/PDFs)
+      // Fetch URL contents server-side
+      const urlTexts: string[] = [];
+      if (urls && Array.isArray(urls) && urls.length > 0) {
+        for (const url of urls) {
+          try {
+            const r = await fetch(url, {
+              headers: {
+                "User-Agent": "Mozilla/5.0 (compatible; enoAI/1.0)",
+                Accept: "text/html,application/xhtml+xml,text/plain,*/*",
+              },
+            });
+            if (!r.ok) {
+              urlTexts.push(`Could not fetch ${url}: HTTP ${r.status}`);
+              continue;
+            }
+            const ctype = r.headers.get("content-type") || "";
+            const raw = await r.text();
+            let text = raw;
+            if (ctype.includes("html") || /<html[\s>]/i.test(raw)) {
+              text = raw
+                .replace(/<script[\s\S]*?<\/script>/gi, " ")
+                .replace(/<style[\s\S]*?<\/style>/gi, " ")
+                .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ")
+                .replace(/<!--[\s\S]*?-->/g, " ")
+                .replace(/<[^>]+>/g, " ")
+                .replace(/&nbsp;/g, " ")
+                .replace(/&amp;/g, "&")
+                .replace(/&lt;/g, "<")
+                .replace(/&gt;/g, ">")
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/\s+/g, " ")
+                .trim();
+            }
+            if (text.length > 20000) text = text.slice(0, 20000) + "... [truncated]";
+            urlTexts.push(`Wine list from ${url}:\n${text}`);
+          } catch (e) {
+            urlTexts.push(`Could not fetch ${url}: ${e instanceof Error ? e.message : "unknown error"}`);
+          }
+        }
+      }
+
+      const hasFiles = fileData && fileData.length > 0;
+      if (hasFiles || urlTexts.length > 0) {
         const content: any[] = [
           {
             type: "text",
-            text: lastMessage.content
-          }
+            text: lastMessage.content,
+          },
         ];
-        
-        // Add all files (images and PDFs)
-        for (const file of fileData) {
-          if (file.type === "image") {
-            content.push({
-              type: "image_url",
-              image_url: {
-                url: file.data // base64 data URL
-              }
-            });
-          } else if (file.type === "pdf") {
-            // For PDFs, Gemini supports inline_data format
-            // Extract base64 from data URL
-            const base64Data = file.data.split(',')[1] || file.data;
-            content.push({
-              type: "image_url",
-              image_url: {
-                url: `data:application/pdf;base64,${base64Data}`
-              }
-            });
+
+        for (const urlText of urlTexts) {
+          content.push({ type: "text", text: urlText });
+        }
+
+        if (hasFiles) {
+          for (const file of fileData) {
+            if (file.type === "image") {
+              content.push({
+                type: "image_url",
+                image_url: { url: file.data },
+              });
+            } else if (file.type === "pdf") {
+              const base64Data = file.data.split(",")[1] || file.data;
+              content.push({
+                type: "image_url",
+                image_url: { url: `data:application/pdf;base64,${base64Data}` },
+              });
+            }
           }
         }
-        
+
         formattedMessages.push({
           role: "user",
-          content: content
+          content: content,
         });
       } else {
-        // Regular text message
         formattedMessages.push(lastMessage);
       }
     }
