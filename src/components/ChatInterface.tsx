@@ -283,6 +283,13 @@ const ChatInterface = () => {
                               alt="Uploaded wine label"
                               className="max-w-[200px] max-h-[200px] object-cover"
                             />
+                          ) : attachment.type === "url" ? (
+                            <div className="px-3 py-2 flex items-center gap-2">
+                              <Globe className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground max-w-[240px] truncate">
+                                {attachment.url}
+                              </span>
+                            </div>
                           ) : (
                             <div className="px-3 py-2 flex items-center gap-2">
                               <FileText className="w-4 h-4 text-muted-foreground" />
