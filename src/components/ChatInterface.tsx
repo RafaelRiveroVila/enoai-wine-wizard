@@ -188,6 +188,7 @@ const ChatInterface = () => {
       await streamWineChat({
         messages: messageHistory,
         fileData: fileData.length > 0 ? fileData : undefined,
+        urls: urlList.length > 0 ? urlList : undefined,
         onDelta: (chunk) => {
           assistantContent += chunk;
           setPendingResponse(assistantContent);
