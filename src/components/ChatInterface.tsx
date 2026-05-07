@@ -147,16 +147,18 @@ const ChatInterface = () => {
     try {
       // Convert attachments to base64 for API
       const fileData: { data: string; type: string; mimeType: string }[] = [];
-      
+      const urlList: string[] = [];
+
       for (const attachment of currentAttachments) {
-        if (attachment.type === "image" && attachment.preview) {
+        if (attachment.type === "url") {
+          urlList.push(attachment.url);
+        } else if (attachment.type === "image" && attachment.preview) {
           fileData.push({
             data: attachment.preview,
             type: "image",
-            mimeType: attachment.file.type
+            mimeType: attachment.file.type,
           });
         } else if (attachment.type === "pdf") {
-          // Read PDF as base64
           const base64 = await new Promise<string>((resolve) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
@@ -165,7 +167,7 @@ const ChatInterface = () => {
           fileData.push({
             data: base64,
             type: "pdf",
-            mimeType: "application/pdf"
+            mimeType: "application/pdf",
           });
         }
       }
