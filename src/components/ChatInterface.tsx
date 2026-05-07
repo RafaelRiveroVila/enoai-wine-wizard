@@ -395,15 +395,82 @@ const ChatInterface = () => {
               onChange={handleFileSelect}
               className="hidden"
             />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-              size="icon"
-              variant="outline"
-              className="h-[48px] w-[48px] sm:h-[60px] sm:w-[60px] flex-shrink-0"
-            >
-              <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  disabled={isLoading}
+                  size="icon"
+                  variant="outline"
+                  className="h-[48px] w-[48px] sm:h-[60px] sm:w-[60px] flex-shrink-0"
+                >
+                  <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-72 p-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPopoverOpen(false);
+                    fileInputRef.current?.click();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent text-left"
+                >
+                  <Upload className="w-4 h-4 text-primary" />
+                  <div>
+                    <div className="text-sm font-medium">Upload file</div>
+                    <div className="text-xs text-muted-foreground">Image or PDF wine list</div>
+                  </div>
+                </button>
+                <div className="mt-2 px-3 py-2 border-t border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <LinkIcon className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">From URL</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      placeholder="https://example.com/wine-list"
+                      className="h-9 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const trimmed = urlInput.trim();
+                          if (!trimmed) return;
+                          try {
+                            new URL(trimmed);
+                          } catch {
+                            toast.error("Please enter a valid URL");
+                            return;
+                          }
+                          setAttachments((prev) => [...prev, { type: "url", url: trimmed }]);
+                          setUrlInput("");
+                          setPopoverOpen(false);
+                        }
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const trimmed = urlInput.trim();
+                        if (!trimmed) return;
+                        try {
+                          new URL(trimmed);
+                        } catch {
+                          toast.error("Please enter a valid URL");
+                          return;
+                        }
+                        setAttachments((prev) => [...prev, { type: "url", url: trimmed }]);
+                        setUrlInput("");
+                        setPopoverOpen(false);
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
