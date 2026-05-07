@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Wine, User, Paperclip, X, FileText, RotateCcw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Send, Wine, User, Paperclip, X, FileText, RotateCcw, Link as LinkIcon, Upload, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -16,10 +18,17 @@ interface FileAttachment {
   type: "image" | "pdf";
 }
 
+interface UrlAttachment {
+  type: "url";
+  url: string;
+}
+
+type Attachment = FileAttachment | UrlAttachment;
+
 interface Message {
   role: "user" | "assistant";
   content: string;
-  attachments?: FileAttachment[];
+  attachments?: Attachment[];
 }
 
 const ChatInterface = () => {
