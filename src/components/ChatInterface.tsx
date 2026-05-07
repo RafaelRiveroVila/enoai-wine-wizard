@@ -44,7 +44,9 @@ const ChatInterface = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [urlInput, setUrlInput] = useState("");
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const [pendingResponse, setPendingResponse] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
