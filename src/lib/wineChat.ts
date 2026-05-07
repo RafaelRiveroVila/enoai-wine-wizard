@@ -6,12 +6,14 @@ export interface Message {
 export async function streamWineChat({
   messages,
   fileData,
+  urls,
   onDelta,
   onDone,
   onError,
 }: {
   messages: Message[];
   fileData?: { data: string; type: string; mimeType: string }[];
+  urls?: string[];
   onDelta: (text: string) => void;
   onDone: () => void;
   onError: (error: string) => void;
@@ -25,7 +27,7 @@ export async function streamWineChat({
         "Content-Type": "application/json",
         Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
       },
-      body: JSON.stringify({ messages, fileData }),
+      body: JSON.stringify({ messages, fileData, urls }),
     });
 
     if (!response.ok) {
@@ -48,7 +50,6 @@ export async function streamWineChat({
       
       textBuffer += decoder.decode(value, { stream: true });
 
-      // Process line-by-line
       let newlineIndex: number;
       while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
         let line = textBuffer.slice(0, newlineIndex);
@@ -71,14 +72,12 @@ export async function streamWineChat({
             onDelta(content);
           }
         } catch {
-          // Incomplete JSON, put back in buffer
           textBuffer = line + "\n" + textBuffer;
           break;
         }
       }
     }
 
-    // Final flush
     if (textBuffer.trim()) {
       for (let raw of textBuffer.split("\n")) {
         if (!raw || raw.startsWith(":") || !raw.startsWith("data: ")) continue;
