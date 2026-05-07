@@ -2,7 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Send, Wine, User, Paperclip, X, FileText, RotateCcw } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Send, Wine, User, Paperclip, X, FileText, RotateCcw, Link as LinkIcon, Upload, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -16,10 +18,17 @@ interface FileAttachment {
   type: "image" | "pdf";
 }
 
+interface UrlAttachment {
+  type: "url";
+  url: string;
+}
+
+type Attachment = FileAttachment | UrlAttachment;
+
 interface Message {
   role: "user" | "assistant";
   content: string;
-  attachments?: FileAttachment[];
+  attachments?: Attachment[];
 }
 
 const ChatInterface = () => {
@@ -35,7 +44,9 @@ const ChatInterface = () => {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [attachments, setAttachments] = useState<FileAttachment[]>([]);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [urlInput, setUrlInput] = useState("");
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const [pendingResponse, setPendingResponse] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -136,16 +147,18 @@ const ChatInterface = () => {
     try {
       // Convert attachments to base64 for API
       const fileData: { data: string; type: string; mimeType: string }[] = [];
-      
+      const urlList: string[] = [];
+
       for (const attachment of currentAttachments) {
-        if (attachment.type === "image" && attachment.preview) {
+        if (attachment.type === "url") {
+          urlList.push(attachment.url);
+        } else if (attachment.type === "image" && attachment.preview) {
           fileData.push({
             data: attachment.preview,
             type: "image",
-            mimeType: attachment.file.type
+            mimeType: attachment.file.type,
           });
         } else if (attachment.type === "pdf") {
-          // Read PDF as base64
           const base64 = await new Promise<string>((resolve) => {
             const reader = new FileReader();
             reader.onload = () => resolve(reader.result as string);
@@ -154,7 +167,7 @@ const ChatInterface = () => {
           fileData.push({
             data: base64,
             type: "pdf",
-            mimeType: "application/pdf"
+            mimeType: "application/pdf",
           });
         }
       }
@@ -175,6 +188,7 @@ const ChatInterface = () => {
       await streamWineChat({
         messages: messageHistory,
         fileData: fileData.length > 0 ? fileData : undefined,
+        urls: urlList.length > 0 ? urlList : undefined,
         onDelta: (chunk) => {
           assistantContent += chunk;
           setPendingResponse(assistantContent);
@@ -269,6 +283,13 @@ const ChatInterface = () => {
                               alt="Uploaded wine label"
                               className="max-w-[200px] max-h-[200px] object-cover"
                             />
+                          ) : attachment.type === "url" ? (
+                            <div className="px-3 py-2 flex items-center gap-2">
+                              <Globe className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-sm text-muted-foreground max-w-[240px] truncate">
+                                {attachment.url}
+                              </span>
+                            </div>
                           ) : (
                             <div className="px-3 py-2 flex items-center gap-2">
                               <FileText className="w-4 h-4 text-muted-foreground" />
@@ -340,6 +361,13 @@ const ChatInterface = () => {
                       alt="Preview"
                       className="max-w-[100px] max-h-[100px] object-cover"
                     />
+                  ) : attachment.type === "url" ? (
+                    <div className="px-3 py-2 flex items-center gap-2">
+                      <Globe className="w-4 h-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground max-w-[200px] truncate">
+                        {attachment.url}
+                      </span>
+                    </div>
                   ) : (
                     <div className="px-3 py-2 flex items-center gap-2">
                       <FileText className="w-4 h-4 text-muted-foreground" />
@@ -367,15 +395,82 @@ const ChatInterface = () => {
               onChange={handleFileSelect}
               className="hidden"
             />
-            <Button
-              onClick={() => fileInputRef.current?.click()}
-              disabled={isLoading}
-              size="icon"
-              variant="outline"
-              className="h-[48px] w-[48px] sm:h-[60px] sm:w-[60px] flex-shrink-0"
-            >
-              <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
-            </Button>
+            <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  disabled={isLoading}
+                  size="icon"
+                  variant="outline"
+                  className="h-[48px] w-[48px] sm:h-[60px] sm:w-[60px] flex-shrink-0"
+                >
+                  <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align="start" className="w-72 p-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setPopoverOpen(false);
+                    fileInputRef.current?.click();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent text-left"
+                >
+                  <Upload className="w-4 h-4 text-primary" />
+                  <div>
+                    <div className="text-sm font-medium">Upload file</div>
+                    <div className="text-xs text-muted-foreground">Image or PDF wine list</div>
+                  </div>
+                </button>
+                <div className="mt-2 px-3 py-2 border-t border-border">
+                  <div className="flex items-center gap-2 mb-2">
+                    <LinkIcon className="w-4 h-4 text-primary" />
+                    <span className="text-sm font-medium">From URL</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <Input
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      placeholder="https://example.com/wine-list"
+                      className="h-9 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const trimmed = urlInput.trim();
+                          if (!trimmed) return;
+                          try {
+                            new URL(trimmed);
+                          } catch {
+                            toast.error("Please enter a valid URL");
+                            return;
+                          }
+                          setAttachments((prev) => [...prev, { type: "url", url: trimmed }]);
+                          setUrlInput("");
+                          setPopoverOpen(false);
+                        }
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      onClick={() => {
+                        const trimmed = urlInput.trim();
+                        if (!trimmed) return;
+                        try {
+                          new URL(trimmed);
+                        } catch {
+                          toast.error("Please enter a valid URL");
+                          return;
+                        }
+                        setAttachments((prev) => [...prev, { type: "url", url: trimmed }]);
+                        setUrlInput("");
+                        setPopoverOpen(false);
+                      }}
+                    >
+                      Add
+                    </Button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
