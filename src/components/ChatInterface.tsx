@@ -210,7 +210,7 @@ const ChatInterface = () => {
   };
 
   return (
-    <section className="min-h-screen bg-background pt-6 sm:pt-12 pb-2 sm:pb-12 px-3 sm:px-4 flex flex-col">
+    <section className="min-h-[100dvh] bg-background pt-6 sm:pt-12 pb-2 sm:pb-12 px-3 sm:px-4 flex flex-col">
       <div className="max-w-4xl w-full mx-auto flex-1 flex flex-col">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
