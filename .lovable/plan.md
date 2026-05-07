@@ -1,42 +1,55 @@
-## Plan
+## Goal
 
-Update the mobile chat scrolling so it behaves like an iPhone-style indicator: only a small pill appears while scrolling, then fades away, with no visible track/background behind it.
+Replace the single paperclip "attach file" button with a popover menu that lets the user choose between two ways to provide a wine list:
 
-### What I’ll change
-1. Remove the current global mobile scrollbar styling that targets `html`, `body`, and `*`, since that is forcing custom scrollbars everywhere and is likely what creates the dark/black background.
-2. Scope native scrollbar styling to desktop-only usage, or make mobile scrollbars effectively invisible.
-3. In `ChatInterface`, add a small custom scroll indicator overlay for the messages area:
-   - positioned on the right edge of the chat panel
-   - sized based on scrollable content height
-   - updated as the user scrolls
-   - fades in during scrolling and fades out shortly after scrolling stops
-4. Keep the indicator trackless so the page/card background remains fully visible behind it.
-5. Preserve the current mobile layout fixes so the chat still fills the phone height correctly.
+1. **Upload a file** (image/PDF) — current behavior
+2. **Provide a URL** to a wine list — new behavior, the app fetches and reads the page
 
-### Files likely involved
-- `src/index.css`
-- `src/components/ChatInterface.tsx`
+## UI changes (`src/components/ChatInterface.tsx`)
 
-### Technical details
-- The current CSS applies scrollbar rules globally:
-  - `scrollbar-color: transparent transparent`
-  - `::-webkit-scrollbar`, `::-webkit-scrollbar-track`, `::-webkit-scrollbar-thumb`
-- On mobile-like preview environments, browser scrollbar styling can still render an unwanted dark track/background.
-- Instead of fighting browser scrollbar rendering, I’ll hide the native visual scrollbar for the chat scroller on mobile and render a lightweight overlay pill using React state + scroll position.
+- Replace the existing paperclip `Button` with a shadcn `Popover`.
+- Trigger: same paperclip icon button.
+- Popover content lists two options (with icons from `lucide-react`):
+  - **Upload file** (`Paperclip` / `FileText` icon) — opens the existing hidden file input.
+  - **From URL** (`Link` or `Globe` icon) — reveals a small input + "Add" button inside the popover.
+- When a URL is added, store it as a new "url" attachment chip alongside file chips, with the same remove (`X`) affordance. Display it as a pill showing the hostname.
+- `attachments` state extended: a URL attachment has shape `{ type: "url", url: string }` (alongside existing `image`/`pdf` items). Update `FileAttachment` typing accordingly.
 
-```text
-Chat scroll area
-┌───────────────────────────────┐
-│ message content          │    │
-│                         │ pill│  <- visible only while scrolling
-│                         │    │
-└───────────────────────────────┘
-```
+## Send flow
 
-### Result
-- No black scrollbar background
-- A clean iPhone-like floating pill on mobile
-- Indicator appears only while scrolling and disappears when idle
-- The page background remains the actual visible background
+- On `handleSend`, build the existing `fileData` array from file attachments as today.
+- Additionally collect URL attachments into a new `urls: string[]` field passed to `streamWineChat` and forwarded to the edge function.
 
-Approve this plan and I’ll implement it.
+## Edge function (`supabase/functions/wine-chat/index.ts`)
+
+- Accept new `urls?: string[]` field in the request body.
+- For each URL: server-side `fetch(url)` and extract readable text:
+  - If `Content-Type` is HTML, strip tags / scripts / styles with a small regex-based extractor and truncate to a sane size (e.g. 20k chars) to keep token usage bounded.
+  - If non-HTML text (plain text, markdown), use as-is.
+  - On fetch failure, append a short note like `Could not fetch <url>: <error>` so the model can tell the user.
+- Append the extracted content as additional text blocks in the multimodal `content` array of the last user message:
+  ```
+  Wine list from <url>:
+  <extracted text>
+  ```
+- Keep current image/PDF handling unchanged.
+
+## Library updates (`src/lib/wineChat.ts`)
+
+- Extend `streamWineChat` params with optional `urls?: string[]` and include it in the POST body.
+
+## Validation
+
+- Client-side: validate URL with `new URL(value)` before adding; show a toast on invalid input.
+- Trim input; ignore empty.
+
+## Out of scope
+
+- No JS rendering / headless browser. Static HTML fetch only. If user reports a JS-only menu page later, we can add Firecrawl as a follow-up.
+- No persistence of URLs beyond the current message.
+
+## Files touched
+
+- `src/components/ChatInterface.tsx` — popover UI, URL attachment handling, send payload
+- `src/lib/wineChat.ts` — pass `urls` through
+- `supabase/functions/wine-chat/index.ts` — fetch & inline URL contents
