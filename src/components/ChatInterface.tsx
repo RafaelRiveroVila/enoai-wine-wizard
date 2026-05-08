@@ -48,6 +48,10 @@ const ChatInterface = () => {
   const [urlInput, setUrlInput] = useState("");
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [pendingResponse, setPendingResponse] = useState("");
+  const [activeListing, setActiveListing] = useState<{
+    fileData?: { data: string; type: string; mimeType: string }[];
+    urls?: string[];
+  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevMessageCountRef = useRef(1);
@@ -77,6 +81,7 @@ const ChatInterface = () => {
     setInput("");
     setAttachments([]);
     setPendingResponse("");
+    setActiveListing(null);
     prevMessageCountRef.current = 1;
   };
 
@@ -185,10 +190,20 @@ const ChatInterface = () => {
         content: currentInput || t.analyzePrompt
       });
 
+      // Determine the listing to use: new attachments override; otherwise reuse the active one
+      const hasNewListing = fileData.length > 0 || urlList.length > 0;
+      const listingForRequest = hasNewListing
+        ? { fileData: fileData.length > 0 ? fileData : undefined, urls: urlList.length > 0 ? urlList : undefined }
+        : activeListing ?? {};
+
+      if (hasNewListing) {
+        setActiveListing(listingForRequest);
+      }
+
       await streamWineChat({
         messages: messageHistory,
-        fileData: fileData.length > 0 ? fileData : undefined,
-        urls: urlList.length > 0 ? urlList : undefined,
+        fileData: listingForRequest.fileData,
+        urls: listingForRequest.urls,
         onDelta: (chunk) => {
           assistantContent += chunk;
           setPendingResponse(assistantContent);
