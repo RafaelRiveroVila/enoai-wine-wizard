@@ -8,6 +8,7 @@ import { Send, Wine, User, Paperclip, X, FileText, RotateCcw, Link as LinkIcon, 
 import { toast } from "sonner";
 import { streamWineChat } from "@/lib/wineChat";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useUser } from "@/contexts/UserContext";
 import WineRecommendationDisplay, { parseWineRecommendation } from "./WineRecommendationDisplay";
 import MarkdownContent from "./MarkdownContent";
 import ScrollPill from "./ScrollPill";
@@ -33,6 +34,7 @@ interface Message {
 
 const ChatInterface = () => {
   const { t, language } = useLanguage();
+  const { clientMode, lookupCellarPrice } = useUser();
   
   const getWelcomeMessage = () => t.welcomeMessage;
 
@@ -215,6 +217,13 @@ const ChatInterface = () => {
           ]);
           setPendingResponse("");
           setIsLoading(false);
+
+          if (clientMode) {
+            const parsed = parseWineRecommendation(assistantContent);
+            if (parsed?.wines) {
+              parsed.wines.forEach((w) => lookupCellarPrice(w));
+            }
+          }
         },
         onError: (error) => {
           console.error("Chat error:", error);
