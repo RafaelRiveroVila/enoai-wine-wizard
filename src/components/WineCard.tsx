@@ -1,6 +1,6 @@
 import { Wine, Heart } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { useUser } from "@/contexts/UserContext";
+import { useUser, getWineKey } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export interface WineRecommendation {
@@ -61,9 +61,10 @@ const WineGlass = ({ fill }: WineGlassProps) => {
 };
 
 const WineCard = ({ wine }: WineCardProps) => {
-  const { addFavorite, removeFavorite, isFavorite } = useUser();
+  const { addFavorite, removeFavorite, isFavorite, clientMode, cellarPrices } = useUser();
   const { t, translateCategory } = useLanguage();
   const favorited = isFavorite(wine.name);
+  const cellarEntry = cellarPrices[getWineKey(wine)];
 
   const handleToggleFavorite = () => {
     if (favorited) {
@@ -120,7 +121,28 @@ const WineCard = ({ wine }: WineCardProps) => {
               {wine.price && wine.price !== "N/A" && (
                 <span className="text-xs sm:text-sm font-semibold text-foreground whitespace-nowrap">{wine.price}</span>
               )}
-              <button 
+              {clientMode && cellarEntry && (
+                cellarEntry.loading ? (
+                  <span className="text-[10px] sm:text-xs text-muted-foreground italic whitespace-nowrap">…</span>
+                ) : cellarEntry.price ? (
+                  cellarEntry.source ? (
+                    <a
+                      href={cellarEntry.source}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[10px] sm:text-xs text-muted-foreground hover:text-primary whitespace-nowrap underline-offset-2 hover:underline"
+                      title={cellarEntry.source}
+                    >
+                      {t.cellarPrice}: {cellarEntry.price}
+                    </a>
+                  ) : (
+                    <span className="text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">
+                      {t.cellarPrice}: {cellarEntry.price}
+                    </span>
+                  )
+                ) : null
+              )}
+              <button
                 onClick={handleToggleFavorite}
                 className="flex-shrink-0 p-1 sm:p-1.5 hover:bg-muted rounded-full transition-colors"
               >

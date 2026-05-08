@@ -75,6 +75,15 @@ const ProfilePanel = ({ open, onOpenChange }: ProfilePanelProps) => {
           </Select>
         </div>
 
+        {/* Wine Client Mode */}
+        <div className="mb-6 flex items-start justify-between gap-4 rounded-lg border border-border p-3">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-medium text-foreground">{t.clientMode}</h3>
+            <p className="text-xs text-muted-foreground mt-1">{t.clientModeHint}</p>
+          </div>
+          <Switch checked={clientMode} onCheckedChange={setClientMode} />
+        </div>
+
         {/* Wine Preferences */}
         <div className="mb-6">
           <h3 className="text-sm font-medium text-muted-foreground mb-2">{t.winePreferences}</h3>
