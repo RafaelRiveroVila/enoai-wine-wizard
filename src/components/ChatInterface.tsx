@@ -81,6 +81,7 @@ const ChatInterface = () => {
     setInput("");
     setAttachments([]);
     setPendingResponse("");
+    setActiveListing(null);
     prevMessageCountRef.current = 1;
   };
 
