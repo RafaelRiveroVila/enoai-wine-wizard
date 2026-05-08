@@ -190,10 +190,20 @@ const ChatInterface = () => {
         content: currentInput || t.analyzePrompt
       });
 
+      // Determine the listing to use: new attachments override; otherwise reuse the active one
+      const hasNewListing = fileData.length > 0 || urlList.length > 0;
+      const listingForRequest = hasNewListing
+        ? { fileData: fileData.length > 0 ? fileData : undefined, urls: urlList.length > 0 ? urlList : undefined }
+        : activeListing ?? {};
+
+      if (hasNewListing) {
+        setActiveListing(listingForRequest);
+      }
+
       await streamWineChat({
         messages: messageHistory,
-        fileData: fileData.length > 0 ? fileData : undefined,
-        urls: urlList.length > 0 ? urlList : undefined,
+        fileData: listingForRequest.fileData,
+        urls: listingForRequest.urls,
         onDelta: (chunk) => {
           assistantContent += chunk;
           setPendingResponse(assistantContent);
