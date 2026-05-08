@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import FavoriteWineCard from "@/components/FavoriteWineCard";
@@ -15,7 +16,7 @@ interface ProfilePanelProps {
 }
 
 const ProfilePanel = ({ open, onOpenChange }: ProfilePanelProps) => {
-  const { profile, preferences, favorites, addPreference, removePreference, removeFavorite } = useUser();
+  const { profile, preferences, favorites, clientMode, setClientMode, addPreference, removePreference, removeFavorite } = useUser();
   const { language, setLanguage, t } = useLanguage();
   const [newPreference, setNewPreference] = useState("");
 

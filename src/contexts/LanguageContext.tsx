@@ -54,6 +54,11 @@ interface Translations {
   language: string;
   english: string;
   spanish: string;
+
+  // Client mode
+  clientMode: string;
+  clientModeHint: string;
+  cellarPrice: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -109,6 +114,11 @@ const translations: Record<Language, Translations> = {
     language: "Language",
     english: "English",
     spanish: "Spanish",
+
+    // Client mode
+    clientMode: "Wine client mode (BETA)",
+    clientModeHint: "Adds the bottle's cellar price to each wine card so you can compare with the menu price.",
+    cellarPrice: "Cellar",
   },
   es: {
     // Hero
@@ -162,6 +172,11 @@ const translations: Record<Language, Translations> = {
     language: "Idioma",
     english: "Inglés",
     spanish: "Español",
+
+    // Client mode
+    clientMode: "Modo cliente de vinos (BETA)",
+    clientModeHint: "Añade el precio de bodega de la botella en cada ficha para que puedas compararlo con el precio de la carta.",
+    cellarPrice: "Bodega",
   },
 };
 
