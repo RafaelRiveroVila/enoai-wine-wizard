@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/contexts/UserContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import FavoriteWineCard from "@/components/FavoriteWineCard";
@@ -15,7 +16,7 @@ interface ProfilePanelProps {
 }
 
 const ProfilePanel = ({ open, onOpenChange }: ProfilePanelProps) => {
-  const { profile, preferences, favorites, addPreference, removePreference, removeFavorite } = useUser();
+  const { profile, preferences, favorites, clientMode, setClientMode, addPreference, removePreference, removeFavorite } = useUser();
   const { language, setLanguage, t } = useLanguage();
   const [newPreference, setNewPreference] = useState("");
 
@@ -72,6 +73,15 @@ const ProfilePanel = ({ open, onOpenChange }: ProfilePanelProps) => {
               <SelectItem value="es">{t.spanish}</SelectItem>
             </SelectContent>
           </Select>
+        </div>
+
+        {/* Wine Client Mode */}
+        <div className="mb-6 flex items-start justify-between gap-4 rounded-lg border border-border p-3">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-sm font-medium text-foreground">{t.clientMode}</h3>
+            <p className="text-xs text-muted-foreground mt-1">{t.clientModeHint}</p>
+          </div>
+          <Switch checked={clientMode} onCheckedChange={setClientMode} />
         </div>
 
         {/* Wine Preferences */}
