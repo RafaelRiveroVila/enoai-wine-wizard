@@ -48,6 +48,10 @@ const ChatInterface = () => {
   const [urlInput, setUrlInput] = useState("");
   const [popoverOpen, setPopoverOpen] = useState(false);
   const [pendingResponse, setPendingResponse] = useState("");
+  const [activeListing, setActiveListing] = useState<{
+    fileData?: { data: string; type: string; mimeType: string }[];
+    urls?: string[];
+  } | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const prevMessageCountRef = useRef(1);
